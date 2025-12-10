@@ -28,8 +28,8 @@ const reservaGet = async (req = request, res = response) => {
 }
 
 const reservaPost = async (req = request, res = response) => {
-    const { cancha, fecha, hora } = req.body;
-    const reserva = new Reserva({ cancha, fecha, hora });
+    const { cancha, fecha, hora, usuario } = req.body;
+    const reserva = new Reserva({ cancha, fecha, hora, usuario });
 
     await reserva.save();
 
@@ -42,12 +42,13 @@ const reservaPost = async (req = request, res = response) => {
 
 const reservaPut = async (req = request, res = response) => {
     const { id } = req.params;
-    const { cancha, fecha, hora } = req.body;
+    const { cancha, fecha, hora, usuario } = req.body;
     const reserva = await Reserva.findById(id);
 
     reserva.cancha = cancha;
     reserva.fecha = fecha;
     reserva.hora = hora;
+    reserva.usuario = usuario;
 
     await reserva.save();
 
