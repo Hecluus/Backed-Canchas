@@ -26,6 +26,10 @@ class Server {
     routes() {
         this.app.use(this.canchasPath, require("../routes/canchas"));
         this.app.use(this.reservasPath, require("../routes/reservas"));
+        this.app.use(this.authPath, require("../routes/auth"));
+        this.app.use(this.usuariosPath, require("../routes/usuarios"));
+        this.app.use(this.comidasPath, require("../routes/comidas"));
+        this.app.use(this.categoriasPath, require("../routes/categorias"));
     }
 
     listen() {

@@ -9,6 +9,7 @@ const emailExiste = async (correo) => {
         throw new Error(`El correo ${correo} ya se encuentra en la base de datos`);
     }
 }
+
 const esRolValido = async (rol) => {
     const existeRol = await Rol.findOne({ rol });
     if (!existeRol) {
