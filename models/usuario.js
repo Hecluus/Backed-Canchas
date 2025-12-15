@@ -6,8 +6,9 @@ const UsuarioSchema = Schema({
     correo: { type: String, required: [true, 'El correo es obligatorio'], unique: true },
     password: { type: String, required: [true, 'La contraseña es obligatoria'] },
     rol: { type: String, required: [true, 'El rol es obligatorio'] },
+    img: { type: String },
     fechaRegistro: { type: Date, default: Date.now },
     estado: { type: Boolean, default: true }
 });
 
-module.exports = model('Usuario', UsuarioSchema)
+module.exports = model('Usuarios', UsuarioSchema);
