@@ -8,6 +8,8 @@ class Server {
         this.port = process.env.PORT || 4000;
         this.canchasPath = "/api/canchas";
         this.reservasPath = "/api/reservas";
+        this.comidasPath = "/api/comidas";
+        this.categoriasPath = "/api/categorias";
         this.conectarBD();
         this.middleware();
         this.routes();
