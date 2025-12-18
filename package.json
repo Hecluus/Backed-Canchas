@@ -1,7 +1,7 @@
 {
   "name": "proyecto-canchas-backend",
   "version": "0.0.1",
-  "description": "",
+  "description": "\"# Backed-Canchas\"",
   "license": "MIT",
   "author": "Grupo5",
   "type": "commonjs",
@@ -16,9 +16,18 @@
     "cloudinary": "^2.8.0",
     "cors": "^2.8.5",
     "dotenv": "^17.2.3",
-    "express": "^5.1.0",
+    "express": "^5.2.1",
     "express-validator": "^7.3.1",
     "jsonwebtoken": "^9.0.2",
-    "mongoose": "^9.0.0"
-  }
+    "mongoose": "^9.0.2"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Hecluus/Backed-Canchas.git"
+  },
+  "keywords": [],
+  "bugs": {
+    "url": "https://github.com/Hecluus/Backed-Canchas/issues"
+  },
+  "homepage": "https://github.com/Hecluus/Backed-Canchas#readme"
 }
