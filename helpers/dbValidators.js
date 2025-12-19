@@ -2,6 +2,8 @@ const Usuario = require('../models/usuario');
 const Rol = require('../models/rol');
 const Categoria = require('../models/categoria');
 const Producto = require('../models/producto');
+const Cancha = require('../models/cancha');
+const Reserva = require('../models/reserva');
 
 const emailExiste = async (correo) => {
     const existeEmail = await Usuario.findOne({ correo });
@@ -35,10 +37,26 @@ const productoExiste = async (id) => {
     const existeProducto = await Producto.findById(id);
 }
 
+const canchaExiste = async (id) => {
+    const existeCancha = await Cancha.findById(id);
+    if (!existeCancha) {
+        throw new Error(`El id ${id} no corresponde a ninguna cancha registrada!`);
+    }
+}
+
+const reservaExiste = async (id) => {
+    const existeReserva = await Reserva.findById(id);
+    if (!existeReserva) {
+        throw new Error(`El id ${id} no corresponde a ninguna reserva registrada!`);
+    }
+}
+
 module.exports = {
     emailExiste,
     esRolValido,
     usuarioExiste,
     categoriaExiste,
-    productoExiste
+    productoExiste,
+    canchaExiste,
+    reservaExiste
 }
