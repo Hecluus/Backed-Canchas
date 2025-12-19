@@ -1,7 +1,6 @@
 const Usuario = require('../models/usuario');
 const Rol = require('../models/rol');
 const Categoria = require('../models/categoria');
-const Producto = require('../models/producto');
 const Cancha = require('../models/cancha');
 const Reserva = require('../models/reserva');
 
@@ -33,10 +32,6 @@ const categoriaExiste = async (id) => {
     }
 }
 
-const productoExiste = async (id) => {
-    const existeProducto = await Producto.findById(id);
-}
-
 const canchaExiste = async (id) => {
     const existeCancha = await Cancha.findById(id);
     if (!existeCancha) {
@@ -56,7 +51,6 @@ module.exports = {
     esRolValido,
     usuarioExiste,
     categoriaExiste,
-    productoExiste,
     canchaExiste,
     reservaExiste
 }
