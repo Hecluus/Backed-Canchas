@@ -1,17 +1,49 @@
 const { Router } = require("express");
 
 const { reservasTodasGet, reservaGet, reservaPost, reservaPut, reservaDelete } = require("../controllers/reservas");
+const { check } = require("express-validator");
+const { reservaExiste } = require("../helpers/dbValidators");
+const { validarCampos } = require("../middlewares/validarCampos");
+const { validarJWT } = require("../middlewares/validarJWT");
+const { esAdminRole } = require("../middlewares/validarRoles");
 
 const router = Router();
 
-router.get("/", reservasTodasGet);
+router.get("/", [
+    validarJWT,
+    esAdminRole
+], reservasTodasGet);
 
-router.get("/:id", reservaGet);
+router.get("/:id", [
+    validarJWT,
+    check('id', 'El id no es valido').isMongoId(),
+    check('id').custom(reservaExiste),
+    validarCampos
+], reservaGet);
 
-router.post("/", reservaPost);
+router.post("/", [
+    validarJWT,
+    esAdminRole,
+    check('canchas', 'La cantidad de canchas es obligatoria').notEmpty(),
+    check('desde', 'La hora es obligatoria').notEmpty(),
+    check('hasta', 'La hora es obligatoria').notEmpty(),
+    validarCampos
+], reservaPost);
 
-router.put("/:id", reservaPut);
+router.put("/:id", [
+    validarJWT,
+    esAdminRole,
+    check('id', 'El id no es válido').isMongoId(),
+    check('id').custom(reservaExiste),
+    validarCampos
+], reservaPut);
 
-router.delete("/:id", reservaDelete);
+router.delete("/:id", [
+    validarJWT,
+    esAdminRole,
+    check('id', 'El id no es válido').isMongoId(),
+    check('id').custom(reservaExiste),
+    validarCampos
+], reservaDelete);
 
 module.exports = router;
