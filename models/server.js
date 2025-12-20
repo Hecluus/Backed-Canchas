@@ -27,7 +27,8 @@ class Server {
             methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
             allowedHeaders: ['Content-Type', 'Authorization', 'x-token']
         }));
-
+        this.app.use(cors(corsOptions));
+        this.app.options('*', cors(corsOptions));
         this.app.use(express.json());
         this.app.use(express.static("public"));
     }
