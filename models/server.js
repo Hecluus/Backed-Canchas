@@ -10,6 +10,8 @@ class Server {
         this.reservasPath = "/api/reservas";
         this.comidasPath = "/api/comidas";
         this.categoriasPath = "/api/categorias";
+        this.usuariosPath = "/api/usuarios";
+        this.authPath = "/api/auth";
         this.conectarBD();
         this.middleware();
         this.routes();
