@@ -68,10 +68,27 @@ const reservaDelete = async (req = request, res = response) => {
     });
 }
 
+const obtenerMisReservas = async (req = request, res = response) => {
+    try {
+        const uid = req.uid;
+        const reservas = await Reserva.find({ usuario: uid }).sort({ fecha: 1 });
+        res.json({
+            reservas,
+            msg: "mis reservas obtenidas"
+        });
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({
+            msg: "hable con el administrador"
+        });
+    }
+}
+
 module.exports = {
     reservasTodasGet,
     reservaGet,
     reservaPost,
     reservaPut,
-    reservaDelete
+    reservaDelete,
+    obtenerMisReservas
 }

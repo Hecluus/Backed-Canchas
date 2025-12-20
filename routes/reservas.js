@@ -1,6 +1,6 @@
 const { Router } = require("express");
 
-const { reservasTodasGet, reservaGet, reservaPost, reservaPut, reservaDelete } = require("../controllers/reservas");
+const { reservasTodasGet, reservaGet, reservaPost, reservaPut, reservaDelete, obtenerMisReservas } = require("../controllers/reservas");
 const { check } = require("express-validator");
 const { reservaExiste } = require("../helpers/dbValidators");
 const { validarCampos } = require("../middlewares/validarCampos");
@@ -45,5 +45,9 @@ router.delete("/:id", [
     check('id').custom(reservaExiste),
     validarCampos
 ], reservaDelete);
+
+router.get("/misReservas", [
+    validarJWT
+], obtenerMisReservas);
 
 module.exports = router;

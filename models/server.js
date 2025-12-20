@@ -18,7 +18,7 @@ class Server {
         this.comidasPath = "/api/comidas";
         this.categoriasPath = "/api/categorias";
         this.usuariosPath = "/api/usuarios";
-        this.authPath = "/api/auth/login";
+        this.authPath = "/api/auth";
 
         this.conectarBD();
         this.middleware();
