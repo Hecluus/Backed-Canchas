@@ -2,16 +2,24 @@ const express = require("express");
 const cors = require("cors");
 const { conexionBD } = require("../database/config");
 
+const corsOptions = {
+    origin: '*',
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'x-token']
+};
+
 class Server {
     constructor() {
         this.app = express();
         this.port = process.env.PORT || 4000;
+
         this.canchasPath = "/api/canchas";
         this.reservasPath = "/api/reservas";
         this.comidasPath = "/api/comidas";
         this.categoriasPath = "/api/categorias";
         this.usuariosPath = "/api/usuarios";
         this.authPath = "/api/auth/login";
+
         this.conectarBD();
         this.middleware();
         this.routes();
@@ -22,11 +30,6 @@ class Server {
     }
 
     middleware() {
-        this.app.use(cors({
-            origin: '*',
-            methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-            allowedHeaders: ['Content-Type', 'Authorization', 'x-token']
-        }));
         this.app.use(cors(corsOptions));
         this.app.options('*', cors(corsOptions));
         this.app.use(express.json());
