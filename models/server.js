@@ -18,7 +18,7 @@ class Server {
         this.comidasPath = "/api/comidas";
         this.categoriasPath = "/api/categorias";
         this.usuariosPath = "/api/usuarios";
-        this.authPath = "/api/auth/login";
+        this.authPath = "/api/auth";
 
         this.conectarBD();
         this.middleware();
@@ -31,7 +31,7 @@ class Server {
 
     middleware() {
         this.app.use(cors(corsOptions));
-        this.app.options('*', cors(corsOptions));
+        this.app.options('', cors(corsOptions));
         this.app.use(express.json());
         this.app.use(express.static("public"));
     }
