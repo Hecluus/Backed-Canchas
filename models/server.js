@@ -2,10 +2,22 @@ const express = require("express");
 const cors = require("cors");
 const { conexionBD } = require("../database/config");
 
+// Lista de orígenes permitidos
+const allowedOrigins = [
+    "http://localhost:5173",
+    "https://golazogourmett.netlify.app/"
+];
+
 const corsOptions = {
-    origin: '*',
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization', 'x-token']
+    origin: function (origin, callback) {
+        if (!origin || allowedOrigins.includes(origin)) {
+            callback(null, true);
+        } else {
+            callback(new Error("No permitido por CORS"));
+        }
+    },
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization", "x-token"]
 };
 
 class Server {
@@ -13,6 +25,7 @@ class Server {
         this.app = express();
         this.port = process.env.PORT || 4000;
 
+        // Paths base
         this.canchasPath = "/api/canchas";
         this.reservasPath = "/api/reservas";
         this.comidasPath = "/api/comidas";
@@ -31,7 +44,6 @@ class Server {
 
     middleware() {
         this.app.use(cors(corsOptions));
-        this.app.options('', cors(corsOptions));
         this.app.use(express.json());
         this.app.use(express.static("public"));
     }
@@ -47,7 +59,7 @@ class Server {
 
     listen() {
         this.app.listen(this.port, () => {
-            console.log('Servidor corriendo en el puerto', this.port);
+            console.log("Servidor corriendo en el puerto", this.port);
         });
     }
 }
