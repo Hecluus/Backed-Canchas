@@ -5,7 +5,7 @@ const { conexionBD } = require("../database/config");
 // Lista de orígenes permitidos
 const allowedOrigins = [
     "http://localhost:5173",
-    "https://golazogourmett.netlify.app/"
+    "https://golazogourmett.netlify.app"
 ];
 
 const corsOptions = {
