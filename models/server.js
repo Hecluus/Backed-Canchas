@@ -10,6 +10,7 @@ const allowedOrigins = [
 
 const corsOptions = {
     origin: function (origin, callback) {
+        console.log("Origin recibido:", origin);
         if (!origin || allowedOrigins.includes(origin)) {
             callback(null, true);
         } else {
@@ -43,7 +44,9 @@ class Server {
     }
 
     middleware() {
+        // CORS global
         this.app.use(cors(corsOptions));
+        this.app.options("/", cors(corsOptions));
         this.app.use(express.json());
         this.app.use(express.static("public"));
     }
