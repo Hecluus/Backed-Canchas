@@ -3,7 +3,7 @@ const Server = require("./models/server");
 
 const server = new Server();
 
-if (process.env.NODE_ENV !== 'production') {
+if (process.env.NODE_ENV !== "production") {
     server.listen();
 }
 
