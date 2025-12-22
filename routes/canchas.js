@@ -18,8 +18,8 @@ router.get("/:id", [
 ], canchaGet);
 
 router.post("/", [
-    validarJWT,
-    esAdminRole,
+    // validarJWT,
+    // esAdminRole,
     check('canchas', 'La cantidad de canchas es obligatoria').notEmpty(),
     check('desde', 'La hora es obligatoria').notEmpty(),
     check('hasta', 'La hora es obligatoria').notEmpty(),
