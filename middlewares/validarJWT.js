@@ -3,49 +3,31 @@ const jwt = require('jsonwebtoken');
 const Usuario = require('../models/usuario');
 
 const validarJWT = async (req = request, res = response, next) => {
-    const token = req.header('x-token');
+    const token = req.header('Authorization')?.replace('Bearer ', '');
 
-    //Preguntar si no enviaron el token
     if (!token) {
-        return res.status(401).json({
-            msg: "No hay token en la petición"
-        })
+        return res.status(401).json({ msg: "No hay token en la petición" });
     }
 
-    //Si enviaron el token, hacer:
     try {
         //Verificar el token y obtener el uid
         const { uid } = jwt.verify(token, process.env.JWT_SECRET);
 
-        //Obtener los datos del usuario autenticado (uid)
         const usuario = await Usuario.findById(uid);
-
-        //Validar si el usuario existe
         if (!usuario) {
-            return res.status(401).json({
-                msg: 'Token no válido - usuario no existe'
-            })
+            return res.status(401).json({ msg: "Token no válido - usuario no existe" });
         }
 
-        //Validar que el usuario esté activo
         if (!usuario.estado) {
-            return res.status(401).json({
-                msg: "Token no válido - usuario inactivo"
-            })
+            return res.status(401).json({ msg: "Token no válido - usuario inactivo" });
         }
 
         req.usuario = usuario;
-
         next();
-
     } catch (error) {
-        console.log(error);
-        res.status(401).json({
-            msg: "Token no válido"
-        })
+        console.error("Error al verificar token:", error);
+        res.status(401).json({ msg: "Token no válido" });
     }
-}
+};
 
-module.exports = {
-    validarJWT
-}
+module.exports = { validarJWT };
