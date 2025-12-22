@@ -2,10 +2,22 @@ const express = require("express");
 const cors = require("cors");
 const { conexionBD } = require("../database/config");
 
+const allowedOrigins = [
+    "https://golazogourmett.netlify.app",
+    "http://localhost:5173"
+];
+
 const corsOptions = {
-    origin: '*',
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization', 'x-token']
+    origin: function (origin, callback) {
+        if (!origin || allowedOrigins.includes(origin)) {
+            callback(null, true);
+        } else {
+            callback(new Error("Not allowed by CORS"));
+        }
+    },
+    credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization", "x-token"]
 };
 
 class Server {
@@ -31,7 +43,6 @@ class Server {
 
     middleware() {
         this.app.use(cors(corsOptions));
-        this.app.options('*', cors(corsOptions));
         this.app.use(express.json());
         this.app.use(express.static("public"));
     }
@@ -47,7 +58,7 @@ class Server {
 
     listen() {
         this.app.listen(this.port, () => {
-            console.log('Servidor corriendo en el puerto', this.port);
+            console.log("Servidor corriendo en el puerto", this.port);
         });
     }
 }
