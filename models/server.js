@@ -2,69 +2,65 @@ const express = require("express");
 const cors = require("cors");
 const { conexionBD } = require("../database/config");
 
-// Lista de orígenes permitidos
 const allowedOrigins = [
-    "http://localhost:5173",
-    "https://golazogourmett.netlify.app"
+  "https://golazogourmett.netlify.app", 
+  "http://localhost:5173"               
 ];
 
 const corsOptions = {
-    origin: function (origin, callback) {
-        console.log("Origin recibido:", origin);
-        if (!origin || allowedOrigins.includes(origin)) {
-            callback(null, true);
-        } else {
-            callback(new Error("No permitido por CORS"));
-        }
-    },
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization", "x-token"]
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
+  credentials: true,
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization", "x-token"]
 };
 
 class Server {
-    constructor() {
-        this.app = express();
-        this.port = process.env.PORT || 4000;
+  constructor() {
+    this.app = express();
+    this.port = process.env.PORT || 4000;
 
-        // Paths base
-        this.canchasPath = "/api/canchas";
-        this.reservasPath = "/api/reservas";
-        this.comidasPath = "/api/comidas";
-        this.categoriasPath = "/api/categorias";
-        this.usuariosPath = "/api/usuarios";
-        this.authPath = "/api/auth";
+    this.canchasPath = "/api/canchas";
+    this.reservasPath = "/api/reservas";
+    this.comidasPath = "/api/comidas";
+    this.categoriasPath = "/api/categorias";
+    this.usuariosPath = "/api/usuarios";
+    this.authPath = "/api/auth";
 
-        this.conectarBD();
-        this.middleware();
-        this.routes();
-    }
+    this.conectarBD();
+    this.middleware();
+    this.routes();
+  }
 
-    async conectarBD() {
-        await conexionBD();
-    }
+  async conectarBD() {
+    await conexionBD();
+  }
 
-    middleware() {
-        // CORS global
-        this.app.use(cors(corsOptions));
-        this.app.options("/", cors(corsOptions));
-        this.app.use(express.json());
-        this.app.use(express.static("public"));
-    }
+  middleware() {
+    this.app.use(cors(corsOptions));
+    this.app.use(express.json());
+    this.app.use(express.static("public"));
+  }
 
-    routes() {
-        this.app.use(this.canchasPath, require("../routes/canchas"));
-        this.app.use(this.reservasPath, require("../routes/reservas"));
-        this.app.use(this.authPath, require("../routes/auth"));
-        this.app.use(this.usuariosPath, require("../routes/usuarios"));
-        this.app.use(this.comidasPath, require("../routes/comidas"));
-        this.app.use(this.categoriasPath, require("../routes/categorias"));
-    }
+  routes() {
+    this.app.use(this.canchasPath, require("../routes/canchas"));
+    this.app.use(this.reservasPath, require("../routes/reservas"));
+    this.app.use(this.authPath, require("../routes/auth"));
+    this.app.use(this.usuariosPath, require("../routes/usuarios"));
+    this.app.use(this.comidasPath, require("../routes/comidas"));
+    this.app.use(this.categoriasPath, require("../routes/categorias"));
+  }
 
-    listen() {
-        this.app.listen(this.port, () => {
-            console.log("Servidor corriendo en el puerto", this.port);
-        });
-    }
+  listen() {
+    this.app.listen(this.port, () => {
+      console.log("Servidor corriendo en el puerto", this.port);
+    });
+  }
 }
 
 module.exports = Server;

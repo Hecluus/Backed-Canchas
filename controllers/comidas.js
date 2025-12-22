@@ -6,7 +6,13 @@ const crearComida = async (req = request, res = response) => {
   try {
     const comida = new Comida(req.body);
     await comida.save();
-    res.status(201).json(comida);
+
+    // devolver populada
+    const comidaPopulada = await Comida.findById(comida._id)
+      .populate("categoria")
+      .populate("usuario");
+
+    res.status(201).json(comidaPopulada);
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
@@ -15,7 +21,9 @@ const crearComida = async (req = request, res = response) => {
 // Listar comidas
 const obtenerComidas = async (req = request, res = response) => {
   try {
-    const comidas = await Comida.find().populate("categoria");
+    const comidas = await Comida.find()
+      .populate("categoria")
+      .populate("usuario");
     res.json(comidas);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -25,7 +33,9 @@ const obtenerComidas = async (req = request, res = response) => {
 // Obtener una comida
 const obtenerComida = async (req = request, res = response) => {
   try {
-    const comida = await Comida.findById(req.params.id).populate("categoria");
+    const comida = await Comida.findById(req.params.id)
+      .populate("categoria")
+      .populate("usuario");
     if (!comida) return res.status(404).json({ error: "Comida no encontrada" });
     res.json(comida);
   } catch (error) {
@@ -36,7 +46,14 @@ const obtenerComida = async (req = request, res = response) => {
 // Actualizar comida
 const actualizarComida = async (req = request, res = response) => {
   try {
-    const comida = await Comida.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    const comida = await Comida.findByIdAndUpdate(
+      req.params.id,
+      req.body,
+      { new: true }
+    )
+      .populate("categoria")
+      .populate("usuario");
+
     if (!comida) return res.status(404).json({ error: "Comida no encontrada" });
     res.json(comida);
   } catch (error) {
@@ -55,7 +72,6 @@ const eliminarComida = async (req = request, res = response) => {
   }
 };
 
-// 👉 Exportar todas las funciones juntas
 module.exports = {
   crearComida,
   obtenerComidas,
