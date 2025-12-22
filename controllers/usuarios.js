@@ -9,14 +9,14 @@ const usuariosTodosGet = async (req = request, res = response) => {
     const [total, usuarios] = await Promise.all([
         Usuario.countDocuments(query),
         Usuario.find(query).skip(desde).limit(limite)
-    ])
+    ]);
 
     res.json({
         mensaje: 'Usuarios obtenidos',
         total,
         usuarios
     });
-}
+};
 
 const usuarioGetID = async (req = request, res = response) => {
     const { id } = req.params;
@@ -43,8 +43,8 @@ const usuarioPost = async (req = request, res = response) => {
     res.json({
         mensaje: 'Usuario cargado correctamente',
         usuario
-    })
-}
+    });
+};
 
 const usuarioPut = async (req = request, res = response) => {
     const { id } = req.params;
@@ -63,8 +63,8 @@ const usuarioPut = async (req = request, res = response) => {
     res.json({
         mensaje: 'Usuario actualizado correctamente!',
         usuario
-    })
-}
+    });
+};
 
 const usuarioDelete = async (req = request, res = response) => {
     const { id } = req.params;
@@ -74,7 +74,7 @@ const usuarioDelete = async (req = request, res = response) => {
     if (!usuario.estado) {
         return res.json({
             mensaje: 'Usuario no existe'
-        })
+        });
     }
 
     const usuarioInhabilitado = await Usuario.findByIdAndUpdate(id, { estado: false }, { new: true });
@@ -82,8 +82,8 @@ const usuarioDelete = async (req = request, res = response) => {
     res.json({
         mensaje: 'Usuarion inhabilitado exitosamente!',
         usuarioInhabilitado
-    })
-}
+    });
+};
 
 module.exports = {
     usuariosTodosGet,
@@ -91,4 +91,4 @@ module.exports = {
     usuarioPost,
     usuarioDelete,
     usuarioPut
-}
+};
