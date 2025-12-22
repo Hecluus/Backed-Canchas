@@ -10,6 +10,7 @@ const validarJWT = async (req = request, res = response, next) => {
     }
 
     try {
+        //Verificar el token y obtener el uid
         const { uid } = jwt.verify(token, process.env.JWT_SECRET);
 
         const usuario = await Usuario.findById(uid);
