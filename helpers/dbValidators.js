@@ -1,5 +1,4 @@
 const Usuario = require('../models/usuario');
-const Rol = require('../models/rol');
 const Categoria = require('../models/categoria');
 const Cancha = require('../models/cancha');
 const Reserva = require('../models/reserva');
@@ -8,13 +7,6 @@ const emailExiste = async (correo) => {
     const existeEmail = await Usuario.findOne({ correo });
     if (existeEmail) {
         throw new Error(`El correo ${correo} ya se encuentra en la base de datos`);
-    }
-}
-
-const esRolValido = async (rol) => {
-    const existeRol = await Rol.findOne({ rol });
-    if (!existeRol) {
-        throw new Error(`El rol ${rol} no existe en la base de datos!`);
     }
 }
 
@@ -48,7 +40,6 @@ const reservaExiste = async (id) => {
 
 module.exports = {
     emailExiste,
-    esRolValido,
     usuarioExiste,
     categoriaExiste,
     canchaExiste,
