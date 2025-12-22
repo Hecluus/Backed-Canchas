@@ -9,6 +9,10 @@ const { esAdminRole } = require("../middlewares/validarRoles");
 
 const router = Router();
 
+router.get("/misReservas", [
+    validarJWT
+], obtenerMisReservas);
+
 router.get("/", [
     validarJWT,
     esAdminRole
@@ -23,10 +27,9 @@ router.get("/:id", [
 
 router.post("/", [
     validarJWT,
-    esAdminRole,
-    check('canchas', 'La cantidad de canchas es obligatoria').notEmpty(),
-    check('desde', 'La hora es obligatoria').notEmpty(),
-    check('hasta', 'La hora es obligatoria').notEmpty(),
+    // check('canchas', 'La cantidad de canchas es obligatoria').notEmpty(),
+    // check('desde', 'La hora es obligatoria').notEmpty(),
+    // check('hasta', 'La hora es obligatoria').notEmpty(),
     validarCampos
 ], reservaPost);
 
@@ -45,9 +48,5 @@ router.delete("/:id", [
     check('id').custom(reservaExiste),
     validarCampos
 ], reservaDelete);
-
-router.get("/misReservas", [
-    validarJWT
-], obtenerMisReservas);
 
 module.exports = router;
