@@ -70,7 +70,7 @@ const reservaDelete = async (req = request, res = response) => {
 
 const obtenerMisReservas = async (req = request, res = response) => {
     try {
-        const uid = req.uid;
+        const uid = req.usuario._id;
         const reservas = await Reserva.find({ usuario: uid }).sort({ fecha: 1 }).populate('cancha');
         res.json({
             reservas,
