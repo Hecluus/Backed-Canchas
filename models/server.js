@@ -3,8 +3,8 @@ const cors = require("cors");
 const { conexionBD } = require("../database/config");
 
 const allowedOrigins = [
-  "https://golazogourmett.netlify.app", 
-  "http://localhost:5173"               
+  "https://golazogourmett.netlify.app",
+  "http://localhost:5173"
 ];
 
 const corsOptions = {
@@ -31,6 +31,8 @@ class Server {
     this.categoriasPath = "/api/categorias";
     this.usuariosPath = "/api/usuarios";
     this.authPath = "/api/auth";
+    this.mpPath = "/api/create-preference";
+    this.pedidosPath = "/api/pedidos";
 
     this.conectarBD();
     this.middleware();
@@ -54,6 +56,8 @@ class Server {
     this.app.use(this.usuariosPath, require("../routes/usuarios"));
     this.app.use(this.comidasPath, require("../routes/comidas"));
     this.app.use(this.categoriasPath, require("../routes/categorias"));
+    this.app.use(this.mpPath, require("../routes/mercadoPago"));
+    this.app.use(this.pedidosPath, require("../routes/pedidos"));
   }
 
   listen() {
