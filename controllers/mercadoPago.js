@@ -24,7 +24,7 @@ const crearPreferencia = async (req = request, res = response) => {
                 hora_reserva: metadata.hora_reserva,
                 usuario_id: metadata.usuario_id
             },
-            notification_url: "https://61x7hshm-4000.brs.devtunnels.ms/webhook",
+            notification_url: `${process.env.BACKEND_VERCEL_URL}webhook`,
         }
     })
         .then((data) => {
