@@ -33,6 +33,7 @@ class Server {
     this.authPath = "/api/auth";
     this.mpPath = "/api/create-preference";
     this.pedidosPath = "/api/pedidos";
+    this.webhookPath = "/api/webhook";
 
     this.conectarBD();
     this.middleware();
@@ -58,6 +59,7 @@ class Server {
     this.app.use(this.categoriasPath, require("../routes/categorias"));
     this.app.use(this.mpPath, require("../routes/mercadoPago"));
     this.app.use(this.pedidosPath, require("../routes/pedidos"));
+    this.app.use(this.webhookPath, require("../routes/mpWebhook"));
   }
 
   listen() {

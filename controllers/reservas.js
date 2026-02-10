@@ -37,7 +37,6 @@ const reservaPost = async (req = request, res = response) => {
         reserva,
         msg: "reserva creada"
     });
-
 }
 
 const reservaPut = async (req = request, res = response) => {

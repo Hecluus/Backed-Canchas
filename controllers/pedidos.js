@@ -5,13 +5,13 @@ const pedidosGet = async (req, res) => {
         const { limite = 50, desde = 0 } = req.query;
 
         const [pedidos, total] = await Promise.all([
-            Pedido.find()
+            Pedido.find({ estado: true })
                 .skip(Number(desde))
                 .limit(Number(limite))
                 .populate('usuario', 'nombre email')
-                .populate('productos.comida', 'nombre precio')
+                .populate('items.comidaId', 'nombre')
                 .sort({ fecha: -1 }),
-            Pedido.countDocuments()
+            Pedido.countDocuments({ estado: true })
         ]);
 
         res.json({
@@ -32,7 +32,7 @@ const pedidoGet = async (req, res) => {
 
         const pedido = await Pedido.findById(id)
             .populate('usuario', 'nombre email')
-            .populate('productos.comida', 'nombre precio descripcion');
+            .populate('items.comidaId', 'nombre descripcion');
 
         if (!pedido) {
             return res.status(404).json({
@@ -51,19 +51,28 @@ const pedidoGet = async (req, res) => {
 
 const pedidoPost = async (req, res) => {
     try {
-        const { productos, total } = req.body;
+        const { items, total } = req.body;
         const usuarioId = req.usuario._id;
+        const nombreUsuario = req.usuario.nombre;
 
-        if (!productos || productos.length === 0) {
+        if (!items || items.length === 0) {
             return res.status(400).json({
-                msg: "El pedido debe tener al menos un producto"
+                msg: "El pedido debe tener al menos un item"
+            });
+        }
+
+        if (!total || total <= 0) {
+            return res.status(400).json({
+                msg: "El total debe ser mayor a 0"
             });
         }
 
         const pedido = new Pedido({
             usuario: usuarioId,
-            productos,
-            total
+            nombreUsuario,
+            items,
+            total,
+            entregado: false
         });
 
         await pedido.save();
@@ -83,11 +92,11 @@ const pedidoPost = async (req, res) => {
 const pedidoPut = async (req, res) => {
     try {
         const { id } = req.params;
-        const { productos, total } = req.body;
+        const { entregado } = req.body;
 
         const pedido = await Pedido.findByIdAndUpdate(
             id,
-            { productos, total },
+            { entregado },
             { new: true }
         );
 
@@ -109,11 +118,37 @@ const pedidoPut = async (req, res) => {
     }
 };
 
+const misPedidosGet = async (req, res) => {
+    try {
+        const usuarioId = req.usuario._id;
+
+        const pedidos = await Pedido.find({
+            usuario: usuarioId,
+            estado: true
+        })
+            .populate('items.comidaId', 'nombre')
+            .sort({ fecha: -1 });
+
+        res.json({
+            pedidos
+        });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({
+            msg: "Error al obtener tus pedidos"
+        });
+    }
+};
+
 const pedidoDelete = async (req, res) => {
     try {
         const { id } = req.params;
 
-        const pedido = await Pedido.findByIdAndDelete(id);
+        const pedido = await Pedido.findByIdAndUpdate(
+            id,
+            { estado: false },
+            { new: true }
+        );
 
         if (!pedido) {
             return res.status(404).json({
@@ -133,28 +168,11 @@ const pedidoDelete = async (req, res) => {
     }
 };
 
-const misPedidosGet = async (req, res) => {
-    try {
-        const usuarioId = req.usuario._id;
-
-        const pedidos = await Pedido.find({ usuario: usuarioId })
-            .populate('productos.comida', 'nombre precio')
-            .sort({ fecha: -1 });
-
-        res.json({ pedidos });
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({
-            msg: "Error al obtener tus pedidos"
-        });
-    }
-};
-
 module.exports = {
     pedidosGet,
     pedidoGet,
     pedidoPost,
     pedidoPut,
-    pedidoDelete,
-    misPedidosGet
+    misPedidosGet,
+    pedidoDelete
 };

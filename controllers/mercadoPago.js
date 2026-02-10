@@ -1,15 +1,16 @@
 const { request, response } = require("express");
 const { MercadoPagoConfig, Preference } = require("mercadopago");
 
-const client = new MercadoPagoConfig({ accessToken: 'APP_USR-3869196553863656-012720-559d9c6874a91e529966453814d9c169-3164094868' });
+const client = new MercadoPagoConfig({ accessToken: process.env.MP_ACCESS_TOKEN });
 
 const crearPreferencia = async (req = request, res = response) => {
     const preference = new Preference(client);
 
     const { title, quantity, unit_price } = req.body.items[0];
+    const { metadata } = req.body;
 
     preference.create({
-        body: {
+        body: { 
             items: [
                 {
                     title: title,
@@ -17,6 +18,13 @@ const crearPreferencia = async (req = request, res = response) => {
                     unit_price: unit_price
                 }
             ],
+            metadata: {
+                cancha_id: metadata.cancha_id,
+                fecha_reserva: metadata.fecha_reserva,
+                hora_reserva: metadata.hora_reserva,
+                usuario_id: metadata.usuario_id
+            },
+            notification_url: "https://61x7hshm-4000.brs.devtunnels.ms/webhook",
         }
     })
         .then((data) => {
