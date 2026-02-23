@@ -2,8 +2,6 @@ const { Router } = require("express");
 
 const { canchasTodasGet, canchaGet, canchaPost, canchaPut, canchaDelete, obtenerHorasDisponibles, obtenerDisponibilidadTodas } = require("../controllers/canchas");
 const { validarCampos } = require("../middlewares/validarCampos");
-const { esAdminRole } = require("../middlewares/validarRoles");
-const { validarJWT } = require("../middlewares/validarJWT");
 const { check } = require("express-validator");
 const { canchaExiste } = require("../helpers/dbValidators");
 
