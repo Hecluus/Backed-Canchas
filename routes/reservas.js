@@ -43,7 +43,6 @@ router.put("/:id", [
 
 router.delete("/:id", [
     validarJWT,
-    esAdminRole,
     check('id', 'El id no es válido').isMongoId(),
     check('id').custom(reservaExiste),
     validarCampos
