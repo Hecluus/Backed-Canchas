@@ -31,8 +31,8 @@ const usuarioGetID = async (req = request, res = response) => {
 
 const usuarioPost = async (req = request, res = response) => {
     const datos = req.body;
-    const { nombre, apellido, correo, password, rol } = datos;
-    const usuario = new Usuario({ nombre, apellido, correo, password, rol });
+    const { nombre, apellido, correo, password } = datos;
+    const usuario = new Usuario({ nombre, apellido, correo, password });
     const salt = bcrypt.genSaltSync(10);
     const hash = bcrypt.hashSync(password, salt);
 

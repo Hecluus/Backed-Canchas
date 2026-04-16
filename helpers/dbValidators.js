@@ -2,6 +2,7 @@ const Usuario = require('../models/usuario');
 const Categoria = require('../models/categoria');
 const Cancha = require('../models/cancha');
 const Reserva = require('../models/reserva');
+const Comentario = require('../models/comentario');
 
 const emailExiste = async (correo) => {
     const existeEmail = await Usuario.findOne({ correo });
@@ -38,10 +39,18 @@ const reservaExiste = async (id) => {
     }
 }
 
+const comentarioExiste = async (id) => {
+    const existeComentario = await Comentario.findById(id);
+    if (!existeComentario) {
+        throw new Error(`El id ${id} no corresponde a ningun comentario guardado!`);
+    }
+}
+
 module.exports = {
     emailExiste,
     usuarioExiste,
     categoriaExiste,
     canchaExiste,
-    reservaExiste
+    reservaExiste,
+    comentarioExiste
 }
