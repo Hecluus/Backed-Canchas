@@ -11,4 +11,9 @@ const UsuarioSchema = Schema({
     estado: { type: Boolean, default: true }
 });
 
+UsuarioSchema.methods.toJSON = function () {
+    const { password, __v, ...usuario } = this.toObject();
+    return usuario;
+};
+
 module.exports = model('Usuario', UsuarioSchema);

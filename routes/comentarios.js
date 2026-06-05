@@ -7,13 +7,11 @@ const { comentarioExiste } = require("../helpers/dbValidators")
 const router = Router();
 
 router.get('/:id', [
-    validarCampos,
-    check('id', "el id no es válido").isMongoId()
+    check('id', "el id no es válido").isMongoId(),
+    validarCampos
 ], comentarioGet);
 
-router.get('/', [
-    validarCampos
-], comentariosTodosGet);
+router.get('/', comentariosTodosGet);
 
 router.post('/', [
     check('contenido', "El contenido es obligatorio").notEmpty(),

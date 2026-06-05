@@ -8,7 +8,7 @@ const usuariosTodosGet = async (req = request, res = response) => {
 
     const [total, usuarios] = await Promise.all([
         Usuario.countDocuments(query),
-        Usuario.find(query).skip(desde).limit(limite)
+        Usuario.find(query).skip(desde).limit(limite).select('-password -rol')
     ]);
 
     res.json({
@@ -21,7 +21,7 @@ const usuariosTodosGet = async (req = request, res = response) => {
 const usuarioGetID = async (req = request, res = response) => {
     const { id } = req.params;
 
-    const usuario = await Usuario.findById(id);
+    const usuario = await Usuario.findById(id).select('-password -rol');
 
     res.json({
         mensaje: 'Usuario obtenido',
