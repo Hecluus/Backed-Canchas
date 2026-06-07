@@ -127,6 +127,7 @@ const misPedidosGet = async (req, res) => {
             estado: true
         })
             .populate('items.comidaId', 'nombre')
+            .populate('items.productoId', 'nombre img')
             .sort({ fecha: -1 });
 
         res.json({

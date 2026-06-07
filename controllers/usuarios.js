@@ -4,84 +4,47 @@ const jwt = require('jsonwebtoken');
 const Usuario = require('../models/usuario');
 
 const usuariosTodosGet = async (req = request, res = response) => {
-    try {
-        const { desde = 0, limite = 5 } = req.query;
-        const query = { estado: true };
+    const { desde = 0, limite = 5 } = req.query;
+    const query = { estado: true };
 
-        const [total, usuarios] = await Promise.all([
-            Usuario.countDocuments(query),
-            Usuario.find(query).skip(Number(desde)).limit(Number(limite))
-        ]);
+    const [total, usuarios] = await Promise.all([
+        Usuario.countDocuments(query),
+        Usuario.find(query).skip(desde).limit(limite).select('-password -rol')
+    ]);
 
-        res.json({ mensaje: 'Usuarios obtenidos', total, usuarios });
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ mensaje: 'Error en el servidor', error: error.message });
-    }
+    res.json({
+        mensaje: 'Usuarios obtenidos',
+        total,
+        usuarios
+    });
 };
 
 const usuarioGetID = async (req = request, res = response) => {
-    try {
-        const { id } = req.params;
-        if (!mongoose.Types.ObjectId.isValid(id)) {
-            return res.status(400).json({ mensaje: 'ID inválido' });
-        }
+    const { id } = req.params;
 
-        const usuario = await Usuario.findById(id);
-        if (!usuario) {
-            return res.status(404).json({ mensaje: 'Usuario no encontrado' });
-        }
+    const usuario = await Usuario.findById(id).select('-password -rol');
 
-        res.json({ mensaje: 'Usuario obtenido', usuario });
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ mensaje: 'Error en el servidor', error: error.message });
-    }
+    res.json({
+        mensaje: 'Usuario obtenido',
+        usuario
+    });
 };
 
 const usuarioPost = async (req = request, res = response) => {
-    try {
-        const { nombre, apellido, correo, password, rol } = req.body;
+    const datos = req.body;
+    const { nombre, apellido, correo, password } = datos;
+    const usuario = new Usuario({ nombre, apellido, correo, password });
+    const salt = bcrypt.genSaltSync(10);
+    const hash = bcrypt.hashSync(password, salt);
 
-        // Validar correo único
-        const existeCorreo = await Usuario.findOne({ correo });
-        if (existeCorreo) {
-            return res.status(400).json({ mensaje: 'El correo ya está en uso' });
-        }
+    usuario.password = hash;
 
-        // Validar creación de admin
-        if (rol === 'admin') {
-            if (!req.usuario || req.usuario.rol !== 'admin') {
-                return res.status(403).json({ mensaje: 'Solo un administrador puede crear otro administrador' });
-            }
-        }
+    await usuario.save();
 
-        // Crear usuario
-        const usuario = new Usuario({ nombre, apellido, correo, password, rol });
-        await usuario.save();
-
-        // Generar token JWT
-        const token = jwt.sign(
-            { id: usuario._id, correo: usuario.correo },
-            process.env.JWT_SECRET,
-            { expiresIn: '4h' }
-        );
-
-        res.status(201).json({
-            mensaje: 'Usuario creado correctamente',
-            usuario: {
-                id: usuario._id,
-                nombre: usuario.nombre,
-                apellido: usuario.apellido,
-                correo: usuario.correo,
-                rol: usuario.rol
-            },
-            token
-        });
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ mensaje: 'Error en el servidor', error: error.message });
-    }
+    res.json({
+        mensaje: 'Usuario cargado correctamente',
+        usuario
+    });
 };
 
 const usuarioPut = async (req = request, res = response) => {

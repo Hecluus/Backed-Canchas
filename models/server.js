@@ -34,6 +34,8 @@ class Server {
     this.mpPath = "/api/create-preference";
     this.pedidosPath = "/api/pedidos";
     this.webhookPath = "/api/webhook";
+    this.comentariosPath = "/api/comentarios";
+    this.productosPath = "/api/productos";
 
     this.conectarBD();
     this.middleware();
@@ -60,6 +62,8 @@ class Server {
     this.app.use(this.mpPath, require("../routes/mercadoPago"));
     this.app.use(this.pedidosPath, require("../routes/pedidos"));
     this.app.use(this.webhookPath, require("../routes/mpWebhook"));
+    this.app.use(this.comentariosPath, require("../routes/comentarios"));
+    this.app.use(this.productosPath, require("../routes/productos"));
   }
 
   listen() {

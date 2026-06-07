@@ -1,7 +1,7 @@
 const { Router } = require('express');
 const { usuariosTodosGet, usuarioGetID, usuarioPost, usuarioPut, usuarioDelete } = require('../controllers/usuarios');
 const { check } = require('express-validator');
-const { usuarioExiste } = require('../helpers/dbValidators');
+const { usuarioExiste, emailExiste } = require('../helpers/dbValidators');
 const { validarCampos } = require('../middlewares/validarCampos');
 const { validarJWT } = require('../middlewares/validarJWT');
 const { esAdminRole } = require('../middlewares/validarRoles');
@@ -17,6 +17,7 @@ router.get('/', [
 //  Obtener usuario por ID (solo admins autenticados)
 router.get('/:id', [
     validarJWT,
+    esAdminRole,
     check('id', 'El id no es válido').isMongoId(),
     check('id').custom(usuarioExiste),
     validarCampos
@@ -24,21 +25,11 @@ router.get('/:id', [
 
 // Registro abierto: cualquier persona puede crear usuario normal
 router.post('/', [
-    check('nombre', 'El nombre es obligatorio').notEmpty(),
+    check('nombre', 'El nombre es obligatorio').notEmpty().trim().escape(),
+    check('apellido', 'El apellido es obligatorio').notEmpty().trim().escape(),
     check('correo', 'El correo es obligatorio').notEmpty(),
-    check('correo', 'El correo es invalido').isEmail(),
-    check('password', 'El password es obligatorio').notEmpty(),
-    check('password', 'El password debe tener al menos 6 caracteres').isLength({ min: 6 }),
-    validarCampos
-], usuarioPost);
-
-//  Crear admin: solo admins autenticados
-router.post('/admin', [
-    validarJWT,
-    esAdminRole,
-    check('nombre', 'El nombre es obligatorio').notEmpty(),
-    check('correo', 'El correo es obligatorio').notEmpty(),
-    check('correo', 'El correo es invalido').isEmail(),
+    check('correo', 'El correo es invalido').trim().isEmail().normalizeEmail(),
+    check('correo').custom(emailExiste),
     check('password', 'El password es obligatorio').notEmpty(),
     check('password', 'El password debe tener al menos 6 caracteres').isLength({ min: 6 }),
     validarCampos
